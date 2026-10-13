@@ -103,8 +103,8 @@ jobs:
       - name: Build Firmware
         shell: bash
         run: |
-          # 尝试直接单线程编译，并将所有底层错误强制打印在屏幕上
-          make world V=s -j1 || {
+          # 单线程编译，V=s 开启全量日志，并通过 tee 实时写入 build.log
+          make world V=s -j1 2>&1 | tee build.log || {
             echo "=== BUILD FAILED ==="
             exit 1
           }
