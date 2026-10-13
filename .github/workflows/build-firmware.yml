@@ -103,14 +103,11 @@ jobs:
       - name: Build Firmware
         shell: bash
         run: |
-          set -o pipefail
-          # 使用单线程并开启详细日志，同时将输出实时写入 build.log
-          make world V=s -j1 2>&1 | tee build.log || {
-            echo "=========================================="
-            echo "=== 编译失败！正在打印最后的错误日志... ==="
-            echo "=========================================="
-            tail -n 150 build.log
+          # 尝试直接单线程编译，并将所有底层错误强制打印在屏幕上
+          make world V=s -j1 || {
+            echo "=== BUILD FAILED ==="
             exit 1
+          }
 
       - name: Verbose retry on build failure
         if: failure()
