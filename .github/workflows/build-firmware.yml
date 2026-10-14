@@ -87,6 +87,15 @@ jobs:
       - name: Configure
         run: |
           cp '${{ inputs.config_seed }}' .config
+
+              # === 在这里加入修复脚本，解决循环依赖与缺少板级包的问题 ===
+          sed -i '/CONFIG_PACKAGE_squeezelite-custom/d' .config
+          sed -i '/CONFIG_SQUEEZELITE_WMA_ALAC/d' .config
+          echo "# CONFIG_PACKAGE_squeezelite-custom is not set" >> .config
+          echo "# CONFIG_SQUEEZELITE_WMA_ALAC is not set" >> .config
+          echo "CONFIG_PACKAGE_airoha-an7581-mt7996-board=y" >> .config
+          # ========================================================
+          
           BUILD_DATE='${{ steps.version.outputs.date }}' \
           BUILD_ID='${{ steps.version.outputs.build_id }}' \
           REPO_COMMIT='${{ steps.version.outputs.repo_commit }}' \
